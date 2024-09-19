@@ -35,8 +35,8 @@ def validate_xml(tei_filename):
             else:
                 errors[err.filename].append((err.line, err.column, err.message))
 
-    create_error_report(errors, "reports/validation_report.txt")
-    create_error_report(ncname_errors, "reports/ncname_report.txt")
+    create_error_report(errors, "reports/validation_report.md")
+    create_error_report(ncname_errors, "reports/ncname_report.md")
 
 
 if __name__ == "__main__":
