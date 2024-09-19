@@ -9,7 +9,7 @@ def create_error_report(error_dict, report_filename):
     SORTED_ERRORS = {k: error_dict[k] for k in sorted(error_dict)}
     with open(report_filename, "a") as report:
         for f, e in SORTED_ERRORS.items():
-            report.write(f"Error in file: {os.path.basename(f)}\n")
+            report.write(f"\nError in file: {os.path.basename(f)}\n")
             print(f"{os.path.basename(f)}\n")
             for ei in e:
                 report.write(f"\tLine {ei[0]:4d}, Pos {ei[1]:4d}: {ei[2]}\n")
