@@ -5,9 +5,18 @@ import os
 from datetime import datetime
 
 
+def create_error_report(error_dict, report_filename):
+    SORTED_ERRORS = {k: error_dict[k] for k in sorted(error_dict)}
+    with open(report_filename, "a") as report:
+        for f, e in SORTED_ERRORS.items():
+            report.write(f"Error in file: {os.path.basename(f)}\n")
+            print(f"{os.path.basename(f)}\n")
+            for ei in e:
+                report.write(f"\tLine {ei[0]:4d}, Pos {ei[1]:4d}: {ei[2]}\n")
+                print(f"\tLine {ei[0]:4d}, Pos {ei[1]:4d}: {ei[2]}\n")
+
+
 def validate_xml(tei_filename):
-    # Set the date format for the report file
-    report_file = "reports/validation_report.txt"
     # Create a parser with error logging
     parser = etree.XMLParser(remove_blank_text=True, recover=True)
     try:
@@ -18,21 +27,16 @@ def validate_xml(tei_filename):
         return
 
     errors = defaultdict(list)
+    ncname_errors = defaultdict(list)
     if parser.error_log:
         for err in parser.error_log:
             if "is not an NCName" in err.message:
-                continue
-            errors[err.filename].append((err.line, err.column, err.message))
+                ncname_errors[err.filename].append((err.line, err.column, err.message))
+            else:
+                errors[err.filename].append((err.line, err.column, err.message))
 
-    SORTED_ERRORS = {k: errors[k] for k in sorted(errors)}
-
-    with open(report_file, "a") as report:
-        for f, e in SORTED_ERRORS.items():
-            report.write(f"Error in file: {os.path.basename(f)}\n")
-            print(f"{os.path.basename(f)}\n")
-            for ei in e:
-                report.write(f"\tLine {ei[0]:4d}, Pos {ei[1]:4d}: {ei[2]}\n")
-                print(f"\tLine {ei[0]:4d}, Pos {ei[1]:4d}: {ei[2]}\n")
+    create_error_report(errors, "reports/validation_report.txt")
+    create_error_report(ncname_errors, "reports/ncname_report.txt")
 
 
 if __name__ == "__main__":

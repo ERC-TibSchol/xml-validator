@@ -1,4 +1,6 @@
+import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 
@@ -15,7 +17,9 @@ def generate_html_report(input_file, output_file):
 
     errors = {k: errors[k] for k in sorted(errors)}
     html_content = "<html><head><title>XML Validation Report</title></head><body>"
-    html_content += "<h1>XML Validation Report</h1>"
+    html_content += f"<h3>{datetime.now()}</h3>"
+    html_content += f"<h1>XML Validation Report - {os.path.basename(input_file)}</h1>"
+
     for filename, error_list in errors.items():
         html_content += f"<div><h2>{filename}</h2>"
         html_content += "<details><summary>View Errors</summary><ul>"
